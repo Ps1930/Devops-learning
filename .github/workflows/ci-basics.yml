@@ -1,4 +1,4 @@
-name: Day7 CI basic Pipeline
+name: Day7 CI Basic Pipeline
 
 on:
   push:
@@ -11,22 +11,25 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.10'
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
 
-    - name: Install dependencies
-      run: |
-        pip install flask
+      - name: Install flask
+        run: pip install --upgrade pip && pip install flask
 
-    - name: Run a simple test
-      run: |
-        echo "Running test..."
-        python - << 'EOF'
-from flask import Flask
-print("Flask import success")
-EOF
+      - name: Run quick python check
+        run: python - <<'PY'
+import sys
+try:
+    from flask import Flask
+    print("Flask import success")
+except Exception as e:
+    print("Error:", e)
+    sys.exit(1)
+PY
+
