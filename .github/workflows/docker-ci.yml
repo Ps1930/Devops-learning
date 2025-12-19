@@ -1,21 +1,26 @@
-name: Docker CI Build
+name: Docker CI Build & Push
 
 on:
   push:
     branches: [ main ]
-  pull_request:
-    branches: [ main ]
 
 jobs:
-  docker-build:  
+  docker-build-push:
     runs-on: ubuntu-latest
 
     steps:
         - name: Checkout code
           uses: actions/checkout@v3
     
-        - name: Build Docker image
+        - name: Log in to Docker Hub
+          uses: docker/login-action@v3
+          with:
+              username: ${{ secrets.DOCKERHUB_USERNAME }}
+              password: ${{ secrets.DOCKERHUB_TOKEN }}
+        
+        - name: Build and push Docker image
           run: |
-              IMAGE_TAG=${GITHUB_SHA::7}
-              docker build -t ci-test-image:$IMAGE_TAG ./Day14_Multistage
+            IMAGE_TAG=${GITHUB_SHA::7}
+            docker build -t ps1930/ci-demo-app::$IMAGE_TAG ./Day14_MultiStage
+            docker push ps1930/ci-demo-app::$IMAGE_TAG
 
